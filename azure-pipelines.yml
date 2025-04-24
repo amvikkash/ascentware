@@ -1,75 +1,25 @@
-html:
-  lang: "en"
-  head:
-    meta:
-      - charset: "UTF-8"
-      - http-equiv: "X-UA-Compatible"
-        content: "IE=edge"
-      - name: "viewport"
-        content: "width=device-width, initial-scale=1.0"
-    title: "Website with Login & Registration Form"
-    stylesheets:
-      - "style.css"
-      - "https://unicons.iconscout.com/release/v4.0.0/css/line.css"
-  body:
-    header:
-      class: "header"
-      nav:
-        class: "nav"
-        logo: "ASCENTWARE"
-        links:
-          - name: "Home"
-            href: "#"
-          - name: "Product"
-            href: "#"
-          - name: "Services"
-            href: "#"
-          - name: "Contact"
-            href: "#"
-        login_button:
-          text: "Login"
-          id: "form-open"
-    hero_section:
-      class: "hero"
-      content:
-        heading: "Communicate. Collaborate. Create."
-        subtext: "WeDu provides an effective and powerful way to manage your projects"
-        button: "Get Started"
-        features:
-          - icon: "🔒"
-            label: "Speed & Security"
-          - icon: "🧩"
-            label: "Flexibility & Scalability"
-          - icon: "🤝"
-            label: "Better Collaboration"
-      image:
-        src: "image/heroimage2.png"
-        alt: "Collaboration illustration"
-    forms:
-      container_class: "form_container"
-      close_icon: "uil uil-times form_close"
-      login_form:
-        heading: "Login"
-        fields:
-          - type: "email"
-            placeholder: "Enter your email"
-          - type: "password"
-            placeholder: "Enter your password"
-        remember_me: true
-        forgot_password: true
-        button_text: "Login Now"
-        switch_to: "Signup"
-      signup_form:
-        heading: "Signup"
-        fields:
-          - type: "email"
-            placeholder: "Enter your email"
-          - type: "password"
-            placeholder: "Create password"
-          - type: "password"
-            placeholder: "Confirm password"
-        button_text: "Signup Now"
-        switch_to: "Login"
-    footer: {}
-    scripts:
-      - "script.js"
+trigger:
+  branches:
+    include:
+      - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '18.x'
+    displayName: 'Install Node.js'
+
+  - script: |
+      echo "No build step required for static HTML. Copying files to artifact staging directory."
+      mkdir -p $(Build.ArtifactStagingDirectory)
+      cp -R * $(Build.ArtifactStagingDirectory)
+    displayName: 'Prepare Static Files'
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathToPublish: '$(Build.ArtifactStagingDirectory)'
+      artifactName: 'drop'
+      publishLocation: 'Container'
